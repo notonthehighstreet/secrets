@@ -1,0 +1,22 @@
+body {
+  background-color: #DCDCDC;
+  color: black;
+}
+
+a:link, a:visited, a:hover, a:active {
+  color: blue;
+}
+
+div#content {
+  border-color: #B8B8B8;
+  background-color: #FFFFFF;
+}
+
+textarea.secret {
+  border-color: #E4E4E4;
+  background-color: #FFFFFF;
+}
+
+textarea#secret-error {
+  border-color: red;
+}

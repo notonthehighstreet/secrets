@@ -1,24 +1,26 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
 <html>
-    <head>
-        <title>Mendix secure secret exchange</title>
-        <script type="text/javascript" src="https://my.sprintr.com/feedback/sprintrfeedback.js"></script>
-        <script type="text/javascript">
-            checkScript(function () {return (typeof window.sprintrFeedback != "undefined" && typeof $ != "undefined" && typeof $.proxy != "undefined");},
-                function () {
-                     window.sprintrFeedback.create({'sprintrid' : '7b1464ea-17e1-4fec-aea3-8a7ae93d3fda',  allowFile : false, allowSshot : false, userdata : {
-                      'username' : 'Anonymous',
-                      'emailaddress' : '',
-                      'userroles' : '',
-                      'formName' : ''
-                    }});}, 0);
-        </script>
-        <link type="text/css" rel="stylesheet" media="all" href="/static/css/style.css"/>
-    </head>
-    <body>
-        <div id="content">
-            {% block content %}{% endblock %}
-        </div>
-    </body>
+  <head>
+    <title>Secret Service</title>
+    <link type='text/css' rel='stylesheet' href='/static/style.css'/>
+    <link type='text/css' rel='stylesheet' href='/static/theme-{{ config['theme'] }}.css'/>
+    <link rel='icon' href='/static/favicon.ico'>
+  </head>
+  <body>
+    <div id='header'>
+      <h2>Secret Service</h2>
+    </div>
+    <div id='content'>
+      <div id='left-content'></div>
+      <div id='right-content'>
+        <img src='/static/spy.png'>
+      </div>
+      <div id='inner-content'>
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    <div id='footer'>
+      quimby | <a href=https://github.com/notonthehighstreet/quimby>GitHub</a>
+    </div>
+  </body>
 </html>

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{%- block content -%}
+{%- if secret -%}
+        Your secret is:
+        <br/>
+        <textarea class='secret' readonly>{{ secret }}</textarea>
+        <br/>
+        This information has now been deleted.
+{%- elif secret == '' -%}
+        <br/>
+        <br/>
+        This secret has already been retrieved.
+        <br/>
+        <br/>
+        If this is not expected, please notify the person you have received the link from.
+{%- else -%}
+        <br/>
+        <br/>
+        This secret doesn't exist.
+        <br/>
+        <br/>
+        If you are sure that this URL should be valid, please notify the person you have received the link from.
+{%- endif -%}
+{%- endblock -%}
+

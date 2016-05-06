@@ -1,64 +1,67 @@
-from flask import Flask, request, render_template, redirect, escape
-import redis
-import random
-import string
-import os
+from flask import Flask, request, render_template, redirect
+from flask_sslify import SSLify
+from tinydb import TinyDB, Query
+from tinydb.storages import MemoryStorage
+from uuid import uuid4
+from werkzeug.contrib.fixers import ProxyFix
+from os import getenv
 
-host = "https://secrets-accp.mendix.com"
-r = redis.Redis()
+db = TinyDB(storage=MemoryStorage)
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app)
+sslify = SSLify(app, skips=['health'], age=300, permanent=True)
 
-random_char = lambda: random.choice(string.ascii_lowercase + string.digits)
-random_string = lambda x: ''.join(random_char() for x in range(x))
-
-redirect_urls = {'/': '/index.html'}
-for (dirpath, dirname, filenames) in os.walk('static'):
-    for f in filenames:
-        file_url = os.path.join(dirpath, f)
-        redirect_urls[file_url[6:]] = '/%s' % file_url
+app.debug = getenv('DEBUG', False)
+app.config['theme'] = getenv('THEME', 'light')
 
 
-def redirect_url():
-    return redirect(redirect_urls[request.path], 301)
-
-for url in redirect_urls:
-    app.add_url_rule(url, url, redirect_url)
-
-
-@app.route("/create/", methods=['POST'])
-def create():
-    key = random_string(50)
-    secret = request.form['secret']
-    if not secret:
-        secret = random_string(20)
-        generated = True
+@app.route('/', methods=['GET', 'POST'])
+def default():
+    if request.method == 'POST':
+        return render_template('index.html', error=True)
     else:
-        generated = False
-    r.set(key, secret)
-    secret_url = "%s/get/%s" % (host, key)
-
-    if generated:
-        return render_template('generate.tmpl', generated=secret,
-                               url=secret_url)
-
-    return render_template('created.tmpl', url=secret_url)
+        return render_template('index.html')
 
 
-@app.route("/generate")
-def generate():
-    secret = random_string(20)
-    key = random_string(50)
-    r.set(key, secret)
-    generated_url = "%s/get/%s" % (host, key)
-    return render_template('generate.tmpl', generated=secret,
-                           url=generated_url)
+@app.route('/create/', methods=['POST'])
+def create():
+    key = uuid4().hex
+    secret = request.form['secret'].encode('utf-8')
+    if not secret:
+        return redirect('/', 307)
+    else:
+        db.insert({'key': key, 'secret': secret})
+        secret_url = request.url_root + 'get/' + key
+
+        return render_template('create.html', url=secret_url)
 
 
-@app.route("/get/<key>")
+@app.after_request
+def add_header(r):
+    r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    r.headers['Pragma'] = 'no-cache'
+    r.headers['Expires'] = '0'
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
+
+
+@app.route('/get/<key>')
 def retrieve(key=None):
-    secret = escape(r.get(key))
-    r.delete(key)
-    return render_template('get.tmpl', secret=secret)
+    try:
+        result = db.search(Query().key == key)[0]
+        secret = result['secret'].decode('utf-8')
+        # set secret to an empty string
+        db.update({'secret': ''.encode('utf-8')}, Query().key == key)
+    except:
+        secret = False
 
-if __name__ == "__main__":
-    app.run()
+    return render_template('get.html', secret=secret)
+
+
+@app.route('/health', methods=['GET'])
+def health():
+    return 'OK'
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{%- block content -%}
+        Please enter the information you want to share:
+        <form action='/create/' method='post'>
+          <textarea class='secret' {% if error %}id='secret-error' {% endif %}name='secret' autocomplete='off' placeholder='Secret content...'></textarea>
+          <br/>
+          <input id='submit' type='submit' value='Create URL'/>
+        </form>
+{%- endblock -%}
+

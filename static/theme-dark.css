@@ -1,0 +1,39 @@
+body {
+  background-color: black;
+  color: darkseagreen;
+}
+
+a:link, a:visited, a:hover, a:active {
+  color: darkseagreen;
+}
+
+div#content {
+  border-color: #004400;
+  background-color: #001000;
+}
+
+textarea.secret {
+  border-color: #004400;
+  background-color: honeydew;
+}
+
+textarea#secret-error {
+  border-color: red;
+  border-width: 3px;
+}
+
+input#submit {
+  background-color: honeydew;
+  color: black;
+  border: #004400;
+  border-radius: 48px;
+  height: 1.7em;
+}
+
+div#right-content img {
+  -webkit-filter: invert(70%);
+  -moz-filter: invert(70%);
+  -ms-filter: invert(70%);
+  -o-filter: invert(70%);
+  filter: invert(70%);
+}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{%- block content -%}
+        <br/>
+        Your secret has been stored here:
+        <br/>
+        <div id='secret-url'><a href='{{ url }}'>{{ url }}</a></div>
+        The secret will be destroyed after viewing.
+{%- endblock -%}
+
